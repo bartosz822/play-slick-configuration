@@ -2,18 +2,20 @@ organization := "org.virtuslab"
 
 name := "play-slick-configuration"
 
-version := "1.1.0"
+version := "1.1.1"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.11.2"
+
+crossScalaVersions := Seq("2.10.4", scalaVersion.value)
 
 resolvers += Resolver.typesafeRepo("releases")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.slick" %% "slick" % "2.1.0-M1",
-  "com.typesafe.play" %% "play-slick" % "0.6.0.1",
-  "org.scalatest" %% "scalatest" % "2.1.5" % "test",
-  "com.typesafe.play" %% "play-test" % "2.2.2" % "test",
-  "com.h2database" % "h2" % "1.3.175" % "test"
+  "com.typesafe.slick" %% "slick" % "2.1.0",
+  "com.typesafe.play" %% "play-slick" % "0.8.0",
+  "org.scalatest" %% "scalatest" % "2.2.1" % "test",
+  "com.typesafe.play" %% "play-test" % "2.3.2" % "test",
+  "com.h2database" % "h2" % "1.4.181" % "test"
 )
 
 incOptions := incOptions.value.withNameHashing(true)
