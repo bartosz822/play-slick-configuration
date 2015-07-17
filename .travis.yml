@@ -1,8 +1,6 @@
 language: scala
 scala:
-  - "2.10.4"
-  - "2.11.2"
+  - "2.11.7"
 jdk:
-  - openjdk7
   - oraclejdk8
 sbt_args: -no-colors
