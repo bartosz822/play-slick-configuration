@@ -1,49 +1,74 @@
 package org.virtuslab.config
 
 import org.scalatest._
-import play.api.db.slick.Config.driver.simple._
+import org.scalatestplus.play.OneAppPerSuite
+import org.virtuslab.config.util.PlaySlickConfigurationDbDriver
 import play.api.Play
-import play.api.db.slick.DB
+import play.api.db.slick.DatabaseConfigProvider
 import play.api.test.FakeApplication
+import slick.backend.DatabaseConfig
+import slick.driver.JdbcDriver
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
-trait BaseTest extends FlatSpecLike with Matchers
 
-trait AppTest extends BaseTest with BeforeAndAfterEach {
+object TestPlaySlickDbDriver extends PlaySlickConfigurationDbDriver {
+  final def databaseConfig: DatabaseConfig[Nothing] = DatabaseConfigProvider.get(play.api.Play.current)
+  override lazy val driver: JdbcDriver = databaseConfig.driver
+}
+
+class BaseTest extends FlatSpecLike with Matchers
+
+trait AppTest extends BaseTest with OneAppPerSuite {
+
+  import TestPlaySlickDbDriver._
+  import TestPlaySlickDbDriver.driver.api._
 
   private val testDb = Map(
-    "db.default.driver" -> "org.h2.Driver",
-    "db.default.url" -> "jdbc:h2:mem:config",
-    "db.default.user" -> "sa",
-    "db.default.password" -> ""
+    "slick.dbs.default.driver" -> "slick.driver.H2Driver$", //you must provide the required Slick driver! //https://www.playframework.com/documentation/2.4.x/PlaySlickMigrationGuide
+    "slick.dbs.default.db.driver" -> "org.h2.Driver",
+    "slick.dbs.default.db.url" -> "jdbc:h2:mem:config",
+    "slick.dbs.default.db.user" -> "sa",
+    "slick.dbs.default.db.password" -> ""
   )
 
-  implicit var app: FakeApplication = _
 
-  override protected def beforeEach(data: TestData): Unit = {
-    app = new FakeApplication(additionalConfiguration = testDb)
+  private def withApp[A](func: => A): A = {
+    val app = new FakeApplication(additionalConfiguration = testDb)
     Play.start(app)
-    super.beforeEach()
-  }
-
-  override protected def afterEach(data: TestData): Unit = {
+    val ret = func
+    Await.result(db.shutdown, Duration.Inf) //test pass without this line (?we don't use pools in tests?) but see 'Closing Database' section: http://slick.typesafe.com/doc/3.0.3/upgrade.html?#closing-databases
     Play.stop(app)
-    super.afterEach()
+    ret
   }
 
-  private lazy val configurationEntries: TableQuery[ConfigurationEntries] = TableQuery[ConfigurationEntries]
+  private lazy val configurationEntriesQuery = TableQuery[ConfigurationEntries]
+
+  protected def db = TestPlaySlickDbDriver.databaseConfig.db
+
+  case class IntentionalRollbackException() extends Exception("Transaction intentionally aborted")
+
+  protected val awaitTime = 5.seconds
 
   /**
    * Runs function in rolled-back transaction.
    *
-   * @param func function to run in rolled-back transaction
-   * @tparam A type returned by `f`
-   * @return value returned from `f`
+   * @param testCase function to run in rolled-back transaction
    */
-  def rollback[A](func: Session => A): A = DB.withTransaction {
-    implicit session: Session =>
-      configurationEntries.ddl.create
-      val out = func(session)
-      session.rollback()
-      out
+  def rollback(testCase: => DBIO[_]): Unit = {
+    withApp {
+      try {
+        val createSchemaAction = configurationEntriesQuery.schema.create
+        val testCaseAction = testCase
+        val action = createSchemaAction
+          .andThen(testCaseAction)
+          .andThen(DBIO.failed(new IntentionalRollbackException))
+        val future = db.run(action.transactionally)
+        Await.result(future, awaitTime)
+      } catch {
+        case e: IntentionalRollbackException => //Success
+      }
+    }
   }
+
 }
