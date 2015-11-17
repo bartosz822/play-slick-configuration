@@ -1,136 +1,161 @@
 package org.virtuslab.config
 
 import java.util.concurrent.TimeUnit
-import org.joda.time.DateTime
-import org.joda.time.Duration
+import org.joda.time.{DateTime, Duration}
+import org.virtuslab.config.TestPlaySlickDbDriver._
+import scala.concurrent.Await
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.FiniteDuration
 
-/**
- * @author Krzysztof Romanowski, Jerzy Müller
- */
+
 class ConfigurationServiceTest extends AppTest {
 
   behavior of "Configuration API"
 
-  it should "manage configuration correctly via Repository" in rollback { implicit session =>
-    val service = new ConfigurationRepository
-
+  it should "manage configuration correctly via repository" in rollback {
+    //given
+    val repository = new ConfigurationRepository
     val k1 = "k1"
     val k2 = "k2"
-
     val v1 = "v1"
     val v2 = "v2"
     val v3 = "v3"
     val conf1 = ConfigurationEntry(k1, v1)
     val conf2 = ConfigurationEntry(k2, v2)
-    val conf3 = ConfigurationEntry(k1, v3)
 
-    service.saveOrUpdate(conf1)
-    service.saveOrUpdate(conf2)
-
-    //when query for conf
-    val Some(testConf1) = service.byKey(k1)
-    //then valid conf is returned
-    testConf1 shouldEqual v1
-
-    //when update conf
-    service.saveOrUpdate(conf1.copy(value = v3))
-
-    //then conf should be updated
-    service.byKey(k1) shouldEqual Some(v3)
+    //when
+    for {
+      _ <- repository.createOrUpdate(conf1)
+      _ <- repository.createOrUpdate(conf2)
+      Some(testConf1) <- repository.findByKey(k1)
+      Some(testConf2) <- repository.findByKey(k2)
+      //then valid conf is returned
+      _ = testConf1 shouldEqual v1
+      _ = testConf2 shouldEqual v2
+      //when update conf
+      _ <- repository.createOrUpdate(conf1.copy(value = v3))
+      //then conf should be updated
+      _ <- repository.findByKey(k1).map(_ shouldEqual Some(v3))
+    } yield ()
   }
 
-  it should "work for Int keys" in rollback { implicit session =>
-    // SETUP define int key
-    val ParamInt = ConfigurationParam[Int]("intKey")
+  it should "work for Int keys" in rollback {
+    // given define int key
+    val intParam = ConfigurationParam[Int]("intKey")
 
-    // WHEN save it
-    ParamInt.saveValue(1)
-
-    // THEN it should be set
-    ParamInt.get() shouldEqual 1
+    for {
+    // when save it
+      _ <- intParam.saveValue(1)
+      // then it should be set
+      _ <- intParam.value().map(_ shouldEqual 1)
+    } yield ()
   }
 
-  it should "work for String keys" in rollback { implicit session =>
-    // SETUP define String key
-    val ParamString = ConfigurationParam[String]("stringKey")
+  it should "work for String keys" in rollback {
+    // given define String key
+    val stringParam = ConfigurationParam[String]("stringKey")
 
-    // WHEN save it
-    ParamString.saveValue("ala")
-
-    // THEN it should be set
-    ParamString.get() shouldEqual "ala"
+    for {
+    // when save it
+      _ <- stringParam.saveValue("ala")
+      // then it should be set
+      _ <- stringParam.value().map(_ shouldEqual "ala")
+    } yield ()
   }
 
-  it should "work for DateTime keys" in rollback { implicit session =>
-    // SETUP define DateTime key
-    val ParamDateTime = ConfigurationParam[DateTime]("dateTimeKey")
+  it should "work for DateTime keys" in rollback {
+    // given define DateTime key
+    val dataTimeParam = ConfigurationParam[DateTime]("dateTimeKey")
+    val dateTime = new DateTime(2005, 3, 26, 12, 0, 0, 0)
 
-    // WHEN save it
-    val dateTime = DateTime.now()
-    ParamDateTime.saveValue(dateTime)
-
-    // THEN it should be set
-    ParamDateTime.get() shouldEqual dateTime
+    for {
+    // when save it
+      _ <- dataTimeParam.saveValue(dateTime)
+      // then it should be set
+      _ <- dataTimeParam.value().map(_ shouldEqual dateTime)
+    } yield ()
   }
 
-  it should "work for FiniteDuration keys" in rollback { implicit session =>
-    // SETUP define FiniteDuration key
-    val ParamDuration = ConfigurationParam[FiniteDuration]("finiteDurationKey")
-
-    // WHEN save it
+  it should "work for FiniteDuration keys" in rollback {
+    // given define FiniteDuration key
+    val finiteDurationParam = ConfigurationParam[FiniteDuration]("finiteDurationKey")
     val duration = FiniteDuration(12, TimeUnit.DAYS)
-    ParamDuration.saveValue(duration)
 
-    // THEN it should be set
-    ParamDuration.get() shouldEqual duration
+    for {
+    // when save it
+      _ <- finiteDurationParam.saveValue(duration)
+      // then it should be set
+      _ <- finiteDurationParam.value().map(_ shouldEqual duration)
+    } yield ()
   }
 
-  it should "work for Duration keys" in rollback { implicit session =>
-    // SETUP define FiniteDuration key
-    val ParamDuration = ConfigurationParam[Duration]("finiteDurationKey")
-
-    // WHEN save it
+  it should "work for Duration keys" in rollback {
+    // given define FiniteDuration key
+    val durationParam = ConfigurationParam[Duration]("finiteDurationKey")
     val duration = Duration.standardDays(12)
-    ParamDuration.saveValue(duration)
 
-    // THEN it should be set
-    ParamDuration.get() shouldEqual duration
+    for {
+    // when save it
+      _ <- durationParam.saveValue(duration)
+      // then it should be set
+      _ <- durationParam.value().map(_ shouldEqual duration)
+    } yield ()
   }
 
-  it should "work for Boolean keys" in rollback { implicit session =>
-  // SETUP define FiniteDuration key
+  it should "work for Boolean keys" in rollback {
+    // given define FiniteDuration key
     val booleanParam = ConfigurationParam[Boolean]("booleanKey")
-
-    // WHEN save it
     val boolean = true
-    booleanParam.saveValue(boolean)
 
-    // THEN it should be set
-    booleanParam.get() shouldEqual boolean
+    for {
+    // when save it
+      _ <- booleanParam.saveValue(boolean)
+      // then it should be set
+      _ <- booleanParam.value().map(_ shouldEqual boolean)
+    } yield ()
   }
 
-  it should "update value by key" in rollback { implicit session =>
-    // SETUP define key
-    val ParamInt = ConfigurationParam[Int]("intKey")
-    // WHEN save it
-    ParamInt.saveValue(1)
-    // THEN it should be set
-    ParamInt.get() shouldEqual 1
-    // WHEN override itREADME.md
-    ParamInt.saveValue(2)
-    // THEN value changes
-    ParamInt.get() shouldEqual 2
+  it should "update value by key" in rollback {
+    // given define key
+    val intParam = ConfigurationParam[Int]("intKey")
+
+    //when
+    for {
+    // when save it
+      _ <- intParam.saveValue(1)
+      // then it should be set
+      _ <- intParam.value().map(_ shouldEqual 1)
+      // when override itREADME.md
+      _ <- intParam.saveValue(2)
+      // then value changes
+      _ <- intParam.value().map(_ shouldEqual 2)
+    } yield ()
   }
 
-  it should "be empty when param is not set" in rollback { implicit session =>
-    // WHEN define some keys
-    val ParamInt = ConfigurationParam[Int]("intKey")
+  it should "be empty when param is not set" in rollback {
+    // given
+    val intParam = ConfigurationParam[Int]("intKey")
 
-    // THEN check them
-    ParamInt.value() shouldEqual None
-    intercept[NoSuchElementException] {
-      ParamInt.get()
+    for {
+    //when & then
+      _ <- intParam.valueOpt().map(_ shouldEqual None)
+    _ = intercept[NoSuchElementException] {
+      Await.result(db.run(intParam.value()), awaitTime)
     }.getMessage shouldEqual "Configuration value not found for key: intKey"
+    } yield ()
+  }
+
+  it should "delete configuration key" in rollback {
+    // given
+    val intParam = ConfigurationParam[Int]("intKey")
+
+    for {
+      //when & then
+      _ <- intParam.valueOpt().map(_ shouldEqual None)
+      _ <- intParam.saveValue(1)
+      _ <- intParam.value().map(_ shouldEqual 1)
+      _ <- intParam.delete()
+      _ <- intParam.valueOpt().map(_ shouldEqual None)
+    } yield ()
   }
 }
