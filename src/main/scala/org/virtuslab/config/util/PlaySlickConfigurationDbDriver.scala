@@ -6,7 +6,7 @@ import slick.driver.JdbcDriver
 
 
 object PlaySlickConfigurationDbDriver extends PlaySlickConfigurationDbDriver {
-  override lazy val driver = DatabaseConfigProvider.get(play.api.Play.current).driver
+  override lazy val driver: JdbcDriver = DatabaseConfigProvider.get(play.api.Play.current).driver
 }
 
 trait PlaySlickConfigurationDbDriver extends HasJdbcDriver

@@ -14,9 +14,9 @@ libraryDependencies ++= Seq(
   "com.typesafe.slick" %% "slick" % "3.0.3",
   "com.typesafe.play" %% "play-slick" % "1.0.1",
   "org.scalatest" %% "scalatest" % "2.2.5" % "test",
-  "com.typesafe.play" %% "play-test" % "2.4.3" % "test",
+  "com.typesafe.play" %% "play-test" % "2.4.6" % "test",
   "com.h2database" % "h2" % "1.4.187" % "test",
-  "org.scalatestplus" %% "play" % "1.4.0-M4" % "test" //fixes https://groups.google.com/forum/#!topic/play-framework/gztbmbHgnZc
+  "org.scalatestplus" %% "play" % "1.4.0" % "test"
 )
 
 incOptions := incOptions.value.withNameHashing(true)
