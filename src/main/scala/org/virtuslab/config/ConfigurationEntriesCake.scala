@@ -6,7 +6,7 @@ import org.virtuslab.config.util.HasJdbcDriver
 trait ConfigurationEntriesCake {
   self: HasJdbcDriver =>
 
-  import driver.api._
+  import profile.api._
 
   /**
    * Entity for keeping basic configuration in DB.

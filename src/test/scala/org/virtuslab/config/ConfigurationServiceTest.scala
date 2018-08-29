@@ -2,14 +2,13 @@ package org.virtuslab.config
 
 import java.util.concurrent.TimeUnit
 import org.joda.time.{DateTime, Duration}
-import org.virtuslab.config.TestPlaySlickDbDriver._
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.FiniteDuration
 
 
 class ConfigurationServiceTest extends AppTest {
-
+  import testPlaySlickDbDriver._
   behavior of "Configuration API"
 
   it should "manage configuration correctly via repository" in rollback {

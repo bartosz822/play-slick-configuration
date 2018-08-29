@@ -8,7 +8,7 @@ import scala.concurrent.ExecutionContext
 trait ConfigurationParamCake extends ConfigurationSerializersCake with ConfigurationRepositoryCake{
   self: HasJdbcDriver =>
 
-  import driver.api._
+  import profile.api._
 
   /**
    * Class for easy configuration management.
