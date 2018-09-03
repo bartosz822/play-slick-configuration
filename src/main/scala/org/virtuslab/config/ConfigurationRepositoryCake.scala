@@ -7,7 +7,7 @@ import scala.concurrent.ExecutionContext
 trait ConfigurationRepositoryCake extends ConfigurationEntriesCake {
   self: HasJdbcDriver =>
 
-  import driver.api._
+  import profile.api._
 
   private[config] trait ConfigurationQueries {
 

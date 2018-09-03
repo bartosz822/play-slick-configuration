@@ -4,17 +4,17 @@ name := "play-slick-configuration"
 
 version := "2.1.1-SNAPSHOT"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
-crossScalaVersions := Seq("2.10.4", scalaVersion.value)
+crossScalaVersions := Seq(scalaVersion.value)
 
 resolvers += Resolver.typesafeRepo("releases")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.slick" %% "slick" % "3.1.0",
-  "com.typesafe.play" %% "play-slick" % "1.1.1",
-  "org.scalatest" %% "scalatest" % "2.2.5" % "test",
-  "com.typesafe.play" %% "play-test" % "2.4.6" % "test",
+  "com.typesafe.slick" %% "slick" % "3.2.0",
+  "com.typesafe.play" %% "play-slick" % "2.1.0",
+  "org.scalatest" %% "scalatest" % "3.0.1" % "test",
+  "com.typesafe.play" %% "play-test" % "2.5.14" % "test",
   "com.h2database" % "h2" % "1.4.187" % "test",
   "org.scalatestplus" %% "play" % "1.4.0" % "test"
 )

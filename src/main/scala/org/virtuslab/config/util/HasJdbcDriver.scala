@@ -1,8 +1,8 @@
 package org.virtuslab.config.util
 
-import slick.driver.JdbcDriver
+import slick.jdbc.JdbcProfile
 
 
 trait HasJdbcDriver {
-  val driver: JdbcDriver
+  val profile: JdbcProfile
 }

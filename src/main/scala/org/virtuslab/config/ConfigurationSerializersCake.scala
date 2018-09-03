@@ -11,7 +11,6 @@ import scala.concurrent.duration.FiniteDuration
 trait ConfigurationSerializersCake {
   self: HasJdbcDriver =>
 
-  import driver.api._
 
   /**
    * Type class for reading and writing configuration values from/to db.
