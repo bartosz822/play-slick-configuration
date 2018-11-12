@@ -3,7 +3,7 @@ organization := "org.virtuslab"
 
 name := "play-slick-configuration"
 
-version := "2.3.0-SNAPSHOT"
+version := "2.3.0"
 
 val scala_2_11 = "2.11.12"
 val scala_2_12 = "2.12.7"
