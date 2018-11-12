@@ -1,3 +1,4 @@
+import xerial.sbt.Sonatype.autoImport.sonatypePublishTo
 organization := "org.virtuslab"
 
 name := "play-slick-configuration"
@@ -21,8 +22,6 @@ libraryDependencies ++= Seq(
   "com.h2database" % "h2" % "1.4.187" % "test",
   "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0" % Test
 )
-
-incOptions := incOptions.value.withNameHashing(true)
 
 pomExtra := <url>https://github.com/VirtusLab/play-slick-configuration</url>
   <licenses>
@@ -50,3 +49,5 @@ pomExtra := <url>https://github.com/VirtusLab/play-slick-configuration</url>
   </developers>;
 
 xerial.sbt.Sonatype.sonatypeSettings
+
+publishTo := sonatypePublishTo.value
