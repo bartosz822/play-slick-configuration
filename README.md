@@ -19,7 +19,7 @@ Getting play-slick-configuration
 Library is available in sonatype and Maven central since version 1.1.0.
 
 ```scala
-libraryDependencies += "org.virtuslab" %% "play-slick-configuration" % "2.1.0"
+libraryDependencies += "org.virtuslab" %% "play-slick-configuration" % "2.4.0"
 ```
 
 
@@ -27,9 +27,12 @@ libraryDependencies += "org.virtuslab" %% "play-slick-configuration" % "2.1.0"
 | ------ | ----- | ------|
 | 3.0.x | 2.4.x | 2.0.x |
 | 3.1.x | 2.4.x | 2.1.x |
+| 3.2.x | 2.5.x | 2.2.x |
+| 3.2.x | 2.6.x | 2.3.x |
+| 3.3.x | 2.7.x | 2.4.x |
 
 
-This branch is built against Slick 3.1.x, for Slick 1.x use [slick-1.0](https://github.com/Kwestor/play-slick-configuration/tree/slick-1.0) branch.
+This branch is built against Slick 3.3.x, for Slick 1.x use [slick-1.0](https://github.com/Kwestor/play-slick-configuration/tree/slick-1.0) branch.
 
 Examples
 ========

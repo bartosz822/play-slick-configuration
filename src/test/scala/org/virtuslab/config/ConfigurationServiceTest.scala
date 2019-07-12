@@ -1,11 +1,10 @@
 package org.virtuslab.config
 
 import java.util.concurrent.TimeUnit
-import org.joda.time.{DateTime, Duration}
+import org.joda.time.{ DateTime, Duration }
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.FiniteDuration
-
 
 class ConfigurationServiceTest extends AppTest {
   import testPlaySlickDbDriver._
@@ -43,7 +42,7 @@ class ConfigurationServiceTest extends AppTest {
     val intParam = ConfigurationParam[Int]("intKey")
 
     for {
-    // when save it
+      // when save it
       _ <- intParam.saveValue(1)
       // then it should be set
       _ <- intParam.value().map(_ shouldEqual 1)
@@ -55,7 +54,7 @@ class ConfigurationServiceTest extends AppTest {
     val stringParam = ConfigurationParam[String]("stringKey")
 
     for {
-    // when save it
+      // when save it
       _ <- stringParam.saveValue("ala")
       // then it should be set
       _ <- stringParam.value().map(_ shouldEqual "ala")
@@ -68,7 +67,7 @@ class ConfigurationServiceTest extends AppTest {
     val dateTime = new DateTime(2005, 3, 26, 12, 0, 0, 0)
 
     for {
-    // when save it
+      // when save it
       _ <- dataTimeParam.saveValue(dateTime)
       // then it should be set
       _ <- dataTimeParam.value().map(_ shouldEqual dateTime)
@@ -81,7 +80,7 @@ class ConfigurationServiceTest extends AppTest {
     val duration = FiniteDuration(12, TimeUnit.DAYS)
 
     for {
-    // when save it
+      // when save it
       _ <- finiteDurationParam.saveValue(duration)
       // then it should be set
       _ <- finiteDurationParam.value().map(_ shouldEqual duration)
@@ -94,7 +93,7 @@ class ConfigurationServiceTest extends AppTest {
     val duration = Duration.standardDays(12)
 
     for {
-    // when save it
+      // when save it
       _ <- durationParam.saveValue(duration)
       // then it should be set
       _ <- durationParam.value().map(_ shouldEqual duration)
@@ -107,7 +106,7 @@ class ConfigurationServiceTest extends AppTest {
     val boolean = true
 
     for {
-    // when save it
+      // when save it
       _ <- booleanParam.saveValue(boolean)
       // then it should be set
       _ <- booleanParam.value().map(_ shouldEqual boolean)
@@ -120,7 +119,7 @@ class ConfigurationServiceTest extends AppTest {
 
     //when
     for {
-    // when save it
+      // when save it
       _ <- intParam.saveValue(1)
       // then it should be set
       _ <- intParam.value().map(_ shouldEqual 1)
@@ -136,11 +135,11 @@ class ConfigurationServiceTest extends AppTest {
     val intParam = ConfigurationParam[Int]("intKey")
 
     for {
-    //when & then
+      //when & then
       _ <- intParam.valueOpt().map(_ shouldEqual None)
-    _ = intercept[NoSuchElementException] {
-      Await.result(db.run(intParam.value()), awaitTime)
-    }.getMessage shouldEqual "Configuration value not found for key: intKey"
+      _ = intercept[NoSuchElementException] {
+        Await.result(db.run(intParam.value()), awaitTime)
+      }.getMessage shouldEqual "Configuration value not found for key: intKey"
     } yield ()
   }
 

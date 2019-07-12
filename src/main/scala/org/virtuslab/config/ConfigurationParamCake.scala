@@ -4,8 +4,7 @@ import java.util.NoSuchElementException
 import org.virtuslab.config.util.HasJdbcDriver
 import scala.concurrent.ExecutionContext
 
-
-trait ConfigurationParamCake extends ConfigurationSerializersCake with ConfigurationRepositoryCake{
+trait ConfigurationParamCake extends ConfigurationSerializersCake with ConfigurationRepositoryCake {
   self: HasJdbcDriver =>
 
   import profile.api._
@@ -33,8 +32,7 @@ trait ConfigurationParamCake extends ConfigurationSerializersCake with Configura
     def value()(implicit executionContext: ExecutionContext): DBIO[A] = {
       valueOpt().map {
         _.getOrElse(
-          throw new NoSuchElementException(s"Configuration value not found for key: $paramName")
-        )
+          throw new NoSuchElementException(s"Configuration value not found for key: $paramName"))
       }
     }
 
@@ -44,12 +42,12 @@ trait ConfigurationParamCake extends ConfigurationSerializersCake with Configura
      * @param value value to save for this key
      */
     def saveValue(value: A)(implicit executionContext: ExecutionContext): DBIO[Unit] = {
-       repo.createOrUpdate(ConfigurationEntry(paramName, serializer.write(value)))
+      repo.createOrUpdate(ConfigurationEntry(paramName, serializer.write(value)))
     }
 
     /** Removes element from configuration. */
     def delete(): DBIO[Unit] = {
-      repo.delete(paramName).andThen(DBIO.successful(Unit))
+      repo.delete(paramName).andThen(DBIO.successful(()))
     }
 
   }
