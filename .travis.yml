@@ -1,9 +1,10 @@
 language: scala
 scala:
   - "2.11.12"
-  - "2.12.7"
+  - "2.12.8"
+  - "2.13.0"
 jdk:
-  - oraclejdk8
+  - openjdk8
 sbt_args: -no-colors
 
 script: sbt -no-colors ++$TRAVIS_SCALA_VERSION clean +test

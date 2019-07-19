@@ -2,15 +2,13 @@ package org.virtuslab.config
 
 import org.joda.time.DateTime
 import org.joda.time.format.ISODateTimeFormat
-import org.joda.time.{Duration => JDuration}
+import org.joda.time.{ Duration => JDuration }
 import org.virtuslab.config.util.HasJdbcDriver
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
 
-
 trait ConfigurationSerializersCake {
   self: HasJdbcDriver =>
-
 
   /**
    * Type class for reading and writing configuration values from/to db.

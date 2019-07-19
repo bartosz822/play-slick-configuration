@@ -2,7 +2,6 @@ package org.virtuslab.config
 
 import org.virtuslab.config.util.HasJdbcDriver
 
-
 trait ConfigurationEntriesCake {
   self: HasJdbcDriver =>
 
@@ -23,7 +22,7 @@ trait ConfigurationEntriesCake {
 
     def value = column[String]("value")
 
-    def * = (key, value) <>(ConfigurationEntry.tupled, ConfigurationEntry.unapply)
+    def * = (key, value) <> (ConfigurationEntry.tupled, ConfigurationEntry.unapply)
 
   }
 

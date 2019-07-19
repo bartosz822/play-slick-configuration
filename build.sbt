@@ -3,24 +3,25 @@ organization := "org.virtuslab"
 
 name := "play-slick-configuration"
 
-version := "2.3.0"
+version := "2.4.0-SNAPSHOT"
 
 val scala_2_11 = "2.11.12"
-val scala_2_12 = "2.12.7"
+val scala_2_12 = "2.12.8"
+val scala_2_13 = "2.13.0"
 
-scalaVersion := scala_2_11
+scalaVersion := scala_2_13
 
-crossScalaVersions := List(scala_2_11, scala_2_12)
+crossScalaVersions := List(scala_2_11, scala_2_12, scala_2_13)
 
 resolvers += Resolver.typesafeRepo("releases")
 
 libraryDependencies ++= Seq(
-  "com.typesafe.slick" %% "slick" % "3.2.3",
-  "com.typesafe.play" %% "play-slick" % "3.0.3",
-  "org.scalatest" %% "scalatest" % "3.0.1" % "test",
-  "com.typesafe.play" %% "play-test" % "2.6.20" % "test",
-  "com.h2database" % "h2" % "1.4.187" % "test",
-  "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0" % Test
+  "com.typesafe.slick" %% "slick" % "3.3.2",
+  "com.typesafe.play" %% "play-slick" % "4.0.2",
+  "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+  "com.typesafe.play" %% "play-test" % "2.7.3" % "test",
+  "com.h2database" % "h2" % "1.4.199" % "test",
+  "org.scalatestplus.play" %% "scalatestplus-play" % "4.0.3" % Test
 )
 
 pomExtra := <url>https://github.com/VirtusLab/play-slick-configuration</url>
@@ -46,8 +47,19 @@ pomExtra := <url>https://github.com/VirtusLab/play-slick-configuration</url>
       <name>Jerzy Müller</name>
       <url>https://github.com/Kwestor</url>
     </developer>
-  </developers>;
+  </developers>
+
+scalacOptions ++= Seq(
+  "-deprecation",
+  "-unchecked",
+  "-feature",
+  "-Xlint"
+)
 
 xerial.sbt.Sonatype.sonatypeSettings
 
 publishTo := sonatypePublishTo.value
+
+fork in Test := true
+
+parallelExecution in Test := false
